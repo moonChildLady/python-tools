@@ -10,14 +10,14 @@ class qrcodeGUI(QtWidgets.QWidget):
 	def __init__(self, parent=None):
 		super().__init__()
 		self.setFixedSize(600, 400)
-		self.setWindowTitle('二维码生成器-Charles的皮卡丘')
+		self.setWindowTitle('QR Code Gen')
 		self.grid = QGridLayout()
 		# 	--Label
-		self.content_label = QLabel('内容:')
-		self.size_label = QLabel('尺寸:')
-		self.version_label = QLabel('版本:')
-		self.margin_label = QLabel('边距:')
-		self.rendering_label = QLabel('效果:')
+		self.content_label = QLabel('Content:')
+		self.size_label = QLabel('Size:')
+		self.version_label = QLabel('Version:')
+		self.margin_label = QLabel('Margin:')
+		self.rendering_label = QLabel('Render:')
 		self.show_label = QLabel()
 		#scable
 		self.show_label.setScaledContents(True)
@@ -25,10 +25,10 @@ class qrcodeGUI(QtWidgets.QWidget):
 		self.show_label.setMaximumSize(200, 200)
 		# border
 		self.content_edit = QLineEdit()
-		self.content_edit.setText('微信公众号:Charles的皮卡丘')
+		self.content_edit.setText('QR Code')
 		# button
-		self.generate_button = QPushButton('生成二维码')
-		self.save_button = QPushButton('保存二维码')
+		self.generate_button = QPushButton('Generate')
+		self.save_button = QPushButton('Save')
 		
 		self.version_combobox = QComboBox()
 		for i in range(1, 41):
@@ -78,7 +78,7 @@ class qrcodeGUI(QtWidgets.QWidget):
 		self.show_label.setPixmap(qimg_pixmap)
 	# save
 	def saveQrcode(self):
-		filename = QFileDialog.getSaveFileName(self, '保存', './qrcode.png', '所有文件(*)')
+		filename = QFileDialog.getSaveFileName(self, 'Save', './qrcode.png', 'All(*)')
 		if filename[0] != '':
 			self.qr_img.save(filename[0])
 			QDialog().show()
