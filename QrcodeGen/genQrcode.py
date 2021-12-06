@@ -1,11 +1,3 @@
-'''
-Function:
-	二维码生成器
-Author:
-	Charles
-微信公众号:
-	Charles的皮卡丘
-'''
 import io
 import sys
 import qrcode
@@ -20,7 +12,6 @@ class qrcodeGUI(QtWidgets.QWidget):
 		self.setFixedSize(600, 400)
 		self.setWindowTitle('二维码生成器-Charles的皮卡丘')
 		self.grid = QGridLayout()
-		# 定义组件
 		# 	--Label
 		self.content_label = QLabel('内容:')
 		self.size_label = QLabel('尺寸:')
@@ -28,27 +19,26 @@ class qrcodeGUI(QtWidgets.QWidget):
 		self.margin_label = QLabel('边距:')
 		self.rendering_label = QLabel('效果:')
 		self.show_label = QLabel()
-		# 		使得图片可缩放
+		#scable
 		self.show_label.setScaledContents(True)
-		# 		显示时的最大尺寸
+		#display size
 		self.show_label.setMaximumSize(200, 200)
-		# 	--输入框
+		# border
 		self.content_edit = QLineEdit()
 		self.content_edit.setText('微信公众号:Charles的皮卡丘')
-		# 	--按钮
+		# button
 		self.generate_button = QPushButton('生成二维码')
 		self.save_button = QPushButton('保存二维码')
-		# 	--下拉框
+		
 		self.version_combobox = QComboBox()
 		for i in range(1, 41):
 			self.version_combobox.addItem('%s' % str(i))
 		self.size_combobox = QComboBox()
 		for i in range(8, 40, 2):
 			self.size_combobox.addItem('%s * %s' % (str(i*29), str(i*29)))
-		# 	--微调框
+		
 		self.margin_spinbox = QSpinBox()
-		# 布局
-		# 	数字依次对应行, 列, 行数和列数
+
 		self.grid.addWidget(self.rendering_label, 0, 0, 1, 1)
 		self.grid.addWidget(self.show_label, 0, 0, 5, 5)
 		self.grid.addWidget(self.content_label, 0, 5, 1, 1)
@@ -66,7 +56,7 @@ class qrcodeGUI(QtWidgets.QWidget):
 		self.save_button.clicked.connect(self.saveQrcode)
 		self.margin_spinbox.valueChanged.connect(self.genQrcode)
 		self.genQrcode()
-	'''生成二维码'''
+	#gen code
 	def genQrcode(self):
 		content = self.content_edit.text()
 		try:
@@ -86,7 +76,7 @@ class qrcodeGUI(QtWidgets.QWidget):
 		qimg.loadFromData(fp.getvalue(), 'BMP')
 		qimg_pixmap = QtGui.QPixmap.fromImage(qimg)
 		self.show_label.setPixmap(qimg_pixmap)
-	'''保存二维码'''
+	# save
 	def saveQrcode(self):
 		filename = QFileDialog.getSaveFileName(self, '保存', './qrcode.png', '所有文件(*)')
 		if filename[0] != '':
