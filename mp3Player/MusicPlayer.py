@@ -1,9 +1,3 @@
-'''
-Function:
-	音乐播放器
-Author:
-	Charles
-'''
 import os
 import sys
 import time
@@ -15,12 +9,12 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import *
 
 
-'''音乐播放器'''
+
 class musicPlayer(QWidget):
 	def __init__(self):
 		super().__init__()
 		self.__initialize()
-	'''初始化'''
+	#init
 	def __initialize(self):
 		self.setWindowTitle('音乐播放器v0.1.0-Charles的皮卡丘')
 		self.setWindowIcon(QIcon('icon.ico'))
@@ -32,49 +26,49 @@ class musicPlayer(QWidget):
 		self.cur_playing_song = ''
 		self.is_switching = False
 		self.is_pause = True
-		# 界面元素
-		# --播放时间
+		# interface
+		# play time
 		self.label1 = QLabel('00:00')
 		self.label1.setStyle(QStyleFactory.create('Fusion'))
 		self.label2 = QLabel('00:00')
 		self.label2.setStyle(QStyleFactory.create('Fusion'))
-		# --滑动条
+		# scroll
 		self.slider = QSlider(Qt.Horizontal, self)
 		self.slider.sliderMoved[int].connect(lambda: self.player.setPosition(self.slider.value()))
 		self.slider.setStyle(QStyleFactory.create('Fusion'))
-		# --播放按钮
-		self.play_button = QPushButton('播放', self)
+		# play button
+		self.play_button = QPushButton('Play', self)
 		self.play_button.clicked.connect(self.playMusic)
 		self.play_button.setStyle(QStyleFactory.create('Fusion'))
-		# --上一首按钮
-		self.preview_button = QPushButton('上一首', self)
+		# previous button
+		self.preview_button = QPushButton('Previous', self)
 		self.preview_button.clicked.connect(self.previewMusic)
 		self.preview_button.setStyle(QStyleFactory.create('Fusion'))
-		# --下一首按钮
-		self.next_button = QPushButton('下一首', self)
+		# --next button
+		self.next_button = QPushButton('Next', self)
 		self.next_button.clicked.connect(self.nextMusic)
 		self.next_button.setStyle(QStyleFactory.create('Fusion'))
-		# --打开文件夹按钮
-		self.open_button = QPushButton('打开文件夹', self)
+		# --open folder button
+		self.open_button = QPushButton('Open', self)
 		self.open_button.setStyle(QStyleFactory.create('Fusion'))
 		self.open_button.clicked.connect(self.openDir)
-		# --显示音乐列表
+		# --display song list
 		self.qlist = QListWidget()
 		self.qlist.itemDoubleClicked.connect(self.doubleClicked)
 		self.qlist.setStyle(QStyleFactory.create('windows'))
-		# --如果有初始化setting, 导入setting
+		# --settings
 		self.loadSetting()
-		# --播放模式
+		# --play mode
 		self.cmb = QComboBox()
 		self.cmb.setStyle(QStyleFactory.create('Fusion'))
-		self.cmb.addItem('顺序播放')
-		self.cmb.addItem('单曲循环')
-		self.cmb.addItem('随机播放')
-		# --计时器
+		self.cmb.addItem('Normal')
+		self.cmb.addItem('Single')
+		self.cmb.addItem('Shuffle')
+		# --timer
 		self.timer = QTimer(self)
 		self.timer.start(1000)
 		self.timer.timeout.connect(self.playByMode)
-		# 界面布局
+		# interface
 		self.grid = QGridLayout()
 		self.setLayout(self.grid)
 		self.grid.addWidget(self.qlist, 0, 0, 5, 10)
@@ -86,7 +80,7 @@ class musicPlayer(QWidget):
 		self.grid.addWidget(self.preview_button, 2, 11, 1, 2)
 		self.grid.addWidget(self.cmb, 3, 11, 1, 2)
 		self.grid.addWidget(self.open_button, 4, 11, 1, 2)
-	'''根据播放模式播放音乐'''
+	#play mode
 	def playByMode(self):
 		if (not self.is_pause) and (not self.is_switching):
 			self.slider.setMinimum(0)
@@ -121,9 +115,9 @@ class musicPlayer(QWidget):
 				self.slider.setValue(0)
 				self.playMusic()
 				self.is_switching = False
-	'''打开文件夹'''
+	#open folder
 	def openDir(self):
-		self.cur_path = QFileDialog.getExistingDirectory(self, "选取文件夹", self.cur_path)
+		self.cur_path = QFileDialog.getExistingDirectory(self, "Open", self.cur_path)
 		if self.cur_path:
 			self.showMusicList()
 			self.cur_playing_song = ''
@@ -132,15 +126,15 @@ class musicPlayer(QWidget):
 			self.label2.setText('00:00')
 			self.slider.setSliderPosition(0)
 			self.is_pause = True
-			self.play_button.setText('播放')
-	'''导入setting'''
+			self.play_button.setText('Play')
+	#import settings
 	def loadSetting(self):
 		if os.path.isfile(self.settingfilename):
 			config = configparser.ConfigParser()
 			config.read(self.settingfilename)
 			self.cur_path = config.get('MusicPlayer', 'PATH')
 			self.showMusicList()
-	'''更新setting'''
+	#update settings
 	def updateSetting(self):
 		config = configparser.ConfigParser()
 		config.read(self.settingfilename)
@@ -159,40 +153,40 @@ class musicPlayer(QWidget):
 		self.qlist.setCurrentRow(0)
 		if self.songs_list:
 			self.cur_playing_song = self.songs_list[self.qlist.currentRow()][-1]
-	'''双击播放音乐'''
+	#duoble click
 	def doubleClicked(self):
 		self.slider.setValue(0)
 		self.is_switching = True
 		self.setCurPlaying()
 		self.playMusic()
 		self.is_switching = False
-	'''设置当前播放的音乐'''
+	#play current
 	def setCurPlaying(self):
 		self.cur_playing_song = self.songs_list[self.qlist.currentRow()][-1]
 		self.player.setMedia(QMediaContent(QUrl(self.cur_playing_song)))
-	'''提示'''
+	# Hints
 	def Tips(self, message):
-		QMessageBox.about(self, "提示", message)
-	'''播放音乐'''
+		QMessageBox.about(self, "Hints", message)
+	#play
 	def playMusic(self):
 		if self.qlist.count() == 0:
-			self.Tips('当前路径内无可播放的音乐文件')
+			self.Tips('No music files')
 			return
 		if not self.player.isAudioAvailable():
 			self.setCurPlaying()
 		if self.is_pause or self.is_switching:
 			self.player.play()
 			self.is_pause = False
-			self.play_button.setText('暂停')
+			self.play_button.setText('Pause')
 		elif (not self.is_pause) and (not self.is_switching):
 			self.player.pause()
 			self.is_pause = True
-			self.play_button.setText('播放')
-	'''上一首'''
+			self.play_button.setText('Play')
+	# previous
 	def previewMusic(self):
 		self.slider.setValue(0)
 		if self.qlist.count() == 0:
-			self.Tips('当前路径内无可播放的音乐文件')
+			self.Tips('No music files')
 			return
 		pre_row = self.qlist.currentRow()-1 if self.qlist.currentRow() != 0 else self.qlist.count() - 1
 		self.qlist.setCurrentRow(pre_row)
@@ -200,11 +194,11 @@ class musicPlayer(QWidget):
 		self.setCurPlaying()
 		self.playMusic()
 		self.is_switching = False
-	'''下一首'''
+	# next
 	def nextMusic(self):
 		self.slider.setValue(0)
 		if self.qlist.count() == 0:
-			self.Tips('当前路径内无可播放的音乐文件')
+			self.Tips('No music files')
 			return
 		next_row = self.qlist.currentRow()+1 if self.qlist.currentRow() != self.qlist.count()-1 else 0
 		self.qlist.setCurrentRow(next_row)
@@ -214,7 +208,7 @@ class musicPlayer(QWidget):
 		self.is_switching = False
 
 
-'''run'''
+#run
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	gui = musicPlayer()

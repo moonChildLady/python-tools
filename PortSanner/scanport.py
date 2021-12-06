@@ -1,12 +1,9 @@
-# 简单的端口扫描工具
-# 作者: Charles
-# 公众号: Charles的皮卡丘
 import time
 import socket
 import threading
 
 
-# 端口扫描工具
+
 class scanThread(threading.Thread):
 	def __init__(self, ip, port_min=0, port_max=65535):
 		threading.Thread.__init__(self)
@@ -14,14 +11,14 @@ class scanThread(threading.Thread):
 		self.ip = ip
 		self.port_min = max(0, port_min)
 		self.port_max = min(65535, port_max)
-	# 重写run
+
 	def run(self):
 		return self.__checker()
-	# 检测
+
 	def __checker(self):
 		for port in range(self.port_min, self.port_max+1):
 			self.__connect(port)
-	# 连接
+
 	def __connect(self, port):
 		socket.setdefaulttimeout(1)
 		s = socket.socket()
@@ -39,7 +36,7 @@ class scanThread(threading.Thread):
 			print(info)
 			self.__save(info)
 		return flag
-	# 保存结果
+	
 	def __save(self, content):
 		if content:
 			try:
@@ -63,7 +60,7 @@ if __name__ == '__main__':
 	except:
 		print('[Warning]: Enter max port error, use 65535 by default...')
 		port_max = 65535
-	# 一个线程负责扫描num个端口
+	
 	num = 8
 	interval = (port_max - port_min) // num
 	for i in range(interval):
